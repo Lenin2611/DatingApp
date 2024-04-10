@@ -2,6 +2,7 @@ using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace API.Controllers
 {
@@ -17,7 +18,12 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
         {
-            return Ok(await _context.Users.ToListAsync());
+            var list = await _context.Users.ToListAsync();
+            if (list == null)
+            {
+                return BadRequest("Nothing in here.");
+            }
+            return Ok(list);
         }
 
         [HttpGet("{id}")]
@@ -26,6 +32,12 @@ namespace API.Controllers
             return Ok(await _context.Users.FindAsync(id));
         }
 
-        
+        [HttpPost]
+        public async Task<ActionResult<string>> PostUserAsync(AppUser user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return Ok($"{user} added.");
+        }
     }
 }
