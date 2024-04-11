@@ -1,11 +1,12 @@
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class UserController : BaseController
     {
         private readonly DataContext _context;
@@ -15,6 +16,7 @@ namespace API.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
         {
@@ -32,12 +34,13 @@ namespace API.Controllers
             return Ok(await _context.Users.FindAsync(id));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> PostUserAsync(AppUser user)
+        [HttpDelete]
+        public async Task<ActionResult<string>> DeleteUserAsync(string username)
         {
-            await _context.Users.AddAsync(user);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == username);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-            return Ok($"{user} added.");
+            return Ok($"User {user.UserName} removed.");
         }
     }
 }
