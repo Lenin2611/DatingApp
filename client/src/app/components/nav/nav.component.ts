@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { User } from '../interfaces/account';
-import { AccountService } from '../services/account.service';
+import { User } from '../../interfaces/account';
+import { AccountService } from '../../services/account.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
