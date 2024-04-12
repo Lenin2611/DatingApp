@@ -7,13 +7,14 @@ import { FormsModule } from '@angular/forms';
 import { AccountService } from './services/account.service';
 import { Token } from './interfaces/account';
 import { HomeComponent } from './components/home/home.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [RouterOutlet, HttpClientModule, NgFor, NavComponent, HomeComponent, FormsModule],
+  imports: [RouterOutlet, HttpClientModule, NgFor, NavComponent, HomeComponent, FormsModule, ToastrModule],
 })
 export class AppComponent implements OnInit {
   title = 'Dating App';

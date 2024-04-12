@@ -486,4 +486,4 @@ $RECYCLE.BIN/
 API/appsettings.Development.json
 API/appsettings.json
 .editorconfig
-.vscode/launch.json
+.vscode

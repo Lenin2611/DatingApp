@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../interfaces/account';
 import { AccountService } from '../../services/account.service';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [FormsModule, NgIf, AsyncPipe],
+  imports: [FormsModule, AsyncPipe, RouterModule, ToastrModule, CommonModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
@@ -17,20 +19,21 @@ export class NavComponent implements OnInit {
     password: ''
   };
 
-  constructor(public accountService: AccountService) { }
+  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
 
   login() {
     this.accountService.login(this.model).subscribe({
-      next: (response) => console.log(response),
-      error: (error) => console.log(error),
+      next: () => this.router.navigateByUrl('/members'),
+      error: (error) => this.toastr.error(error.error),
       complete: () => console.log('Login completed.')
     });
   }
 
   logout() {
+    this.router.navigateByUrl('/');
     this.accountService.logout();
   }
 }
