@@ -1,5 +1,8 @@
 using API.Data;
+using API.Dtos;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,37 +12,41 @@ namespace API.Controllers
     [Authorize]
     public class UserController : BaseController
     {
-        private readonly DataContext _context;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserController(DataContext context)
+        public UserController(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsersAsync()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsersAsync()
         {
-            var list = await _context.Users.ToListAsync();
-            if (list == null)
-            {
-                return BadRequest("Nothing in here.");
-            }
-            return Ok(list);
+            return Ok(await _userRepository.GetMembersAsync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetUserByIdAsync(int id)
+        [HttpGet("id{id}")]
+        public async Task<ActionResult<MemberDto>> GetUserByIdAsync(int id)
         {
-            return Ok(await _context.Users.FindAsync(id));
+            var user = await _userRepository.GetUserByIdAsync(id);
+            var mapped = _mapper.Map<MemberDto>(user);
+            return Ok(mapped);
+        }
+
+        [HttpGet("username{username}")]
+        public async Task<ActionResult<MemberDto>> GetUserByUsernameAsync(string username)
+        {
+            return await _userRepository.GetMemberByUsernameAsync(username);
         }
 
         [HttpDelete]
         public async Task<ActionResult<string>> DeleteUserAsync(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == username);
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+            _userRepository.RemoveUser(user);
+            await _userRepository.SaveAllAsync();
             return Ok($"User {user.UserName} removed.");
         }
     }
