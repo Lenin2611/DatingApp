@@ -1,6 +1,12 @@
 <form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign up</h2>
     <hr>
+    <div class="row mb-3" *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+            <li *ngFor="let error of validationErrors">{{ error }}</li>
+        </ul>
+    </div>
+    <hr>
     <div class="mb-3">
         <input type="text" class="form-control" name="username" [(ngModel)]="model.username" placeholder="Username">
     </div>

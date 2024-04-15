@@ -43,4 +43,8 @@ export class AccountService {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
   }
+
+  get(path: string) {
+    this.http.get(`${environment.urlBase}${path}`);
+  }
 }
