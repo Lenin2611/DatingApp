@@ -8,6 +8,8 @@ import { MemberDetailComponent } from './pages/members/member-detail/member-deta
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { UnauthorizedComponent } from './errors/unauthorized/unauthorized.component';
+import { MemberEditComponent } from './pages/members/member-edit/member-edit.component';
+import { preventUnsavedChangesGuard } from './guards/prevent-unsaved-changes.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -15,8 +17,9 @@ export const routes: Routes = [
     { path: '', runGuardsAndResolvers: 'always', canActivate: [authGuard], children: [
         { path: 'members', component: MemberListComponent },
         { path: 'members/:username', component: MemberDetailComponent },
+        { path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard] },
         { path: 'lists', component: ListsComponent },
-        { path: 'messages', component: MessagesComponent },
+        { path: 'messages', component: MessagesComponent }
     ]},
     { path: 'not-found', component: NotFoundComponent },
     { path: 'server-error', component: ServerErrorComponent },

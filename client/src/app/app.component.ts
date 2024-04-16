@@ -8,13 +8,14 @@ import { AccountService } from './services/account.service';
 import { Token } from './interfaces/account';
 import { HomeComponent } from './components/home/home.component';
 import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [RouterOutlet, HttpClientModule, CommonModule, NavComponent, HomeComponent, FormsModule, ToastrModule],
+  imports: [RouterOutlet, HttpClientModule, CommonModule, NavComponent, HomeComponent, FormsModule, ToastrModule, NgxSpinnerModule],
 })
 export class AppComponent implements OnInit {
   title = 'Dating App';
