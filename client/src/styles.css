@@ -226,3 +226,17 @@ button.toast-close-button {
         width: 25em;
     }
 }
+
+.nav-tabs>li.open,
+.member-tabset>.nav-tabs>li:hover {
+    border-bottom: 4px solid #cddbfb;
+}
+
+.member-tabset>.nav-tabs>li.active {
+    border-bottom: 4px solid #2048e9;
+    position: relative;
+}
+
+.gallery {
+    height: 600px;
+}

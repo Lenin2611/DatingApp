@@ -1,6 +1,6 @@
-import { NgFor } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavComponent } from './components/nav/nav.component';
 import { FormsModule } from '@angular/forms';
@@ -14,28 +14,22 @@ import { ToastrModule } from 'ngx-toastr';
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [RouterOutlet, HttpClientModule, NgFor, NavComponent, HomeComponent, FormsModule, ToastrModule],
+  imports: [RouterOutlet, HttpClientModule, CommonModule, NavComponent, HomeComponent, FormsModule, ToastrModule],
 })
 export class AppComponent implements OnInit {
   title = 'Dating App';
   users: any;
 
-  constructor(private http: HttpClient, private accountService: AccountService) { }
+  constructor(private accountService: AccountService, @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit(): void {
-    this.getUsers();
     this.setCurrentUser();
   }
 
-  getUsers() {
-    this.http.get('https://localhost:5001/api/user').subscribe({
-      next: (response) => this.users = response,
-      error: (error) => console.log(error),
-      complete: () => console.log('Request completed.'),
-    });
-  }
-
   setCurrentUser() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     const userString = localStorage.getItem('user');
     if (!userString) {
       return;

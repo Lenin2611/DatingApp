@@ -1,8 +1,8 @@
-import { Component, EventEmitter, NgModule, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Register } from '../../interfaces/account';
 import { AccountService } from '../../services/account.service';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,7 +21,7 @@ export class RegisterComponent {
   };
   validationErrors: string[] = [];
 
-  constructor(private accountService: AccountService, private toastr: ToastrService) {  }
+  constructor(private accountService: AccountService) { }
 
   register() {
     this.accountService.register(this.model).subscribe({
@@ -29,8 +29,7 @@ export class RegisterComponent {
       error: (error) => {
         console.log(error);
         this.validationErrors = error;
-      },
-      complete: () => console.log('Register completed.')
+      }
     });
   }
 

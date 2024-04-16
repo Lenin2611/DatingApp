@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { User, Token, Register } from '../interfaces/account';
 import { BehaviorSubject, map } from 'rxjs';
 
@@ -8,13 +8,14 @@ import { BehaviorSubject, map } from 'rxjs';
   providedIn: 'root'
 })
 export class AccountService {
+  baseUrl: string = environment.urlBase;
   private currentUserSource = new BehaviorSubject<Token | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient) { }
 
   register(model: Register) {
-    return this.http.post<Token>(`${environment.urlBase}account/register`, model).pipe(
+    return this.http.post<Token>(`${this.baseUrl}account/register`, model).pipe(
       map((response) => {
         if (response) {
           localStorage.setItem('user', JSON.stringify(response));
@@ -25,7 +26,7 @@ export class AccountService {
   }
 
   login(model: User) {
-    return this.http.post<Token>(`${environment.urlBase}account/login`, model).pipe(
+    return this.http.post<Token>(`${this.baseUrl}account/login`, model).pipe(
       map((response) => {
         if (response) {
           localStorage.setItem('user', JSON.stringify(response));
@@ -45,6 +46,6 @@ export class AccountService {
   }
 
   get(path: string) {
-    this.http.get(`${environment.urlBase}${path}`);
+    this.http.get(`${this.baseUrl}${path}`);
   }
 }
