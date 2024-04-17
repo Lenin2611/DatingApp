@@ -3,6 +3,7 @@ using System.Text;
 using API.Data;
 using API.Dtos;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _service;
+        private readonly IUserRepository _userRepository;
 
-        public AccountController(DataContext context, ITokenService service)
+        public AccountController(DataContext context, ITokenService service, IUserRepository userRepository)
         {
             _context = context;
             _service = service;
+            _userRepository = userRepository;
         }
 
         [HttpPost]
@@ -42,7 +45,7 @@ namespace API.Controllers
         [Route("login")]
         public async Task<ActionResult<UserDto>> LoginUserAsync(LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
+            var user = await _userRepository.GetUserByUsernameAsync(loginDto.Username);
             if (user == null)
                 return Unauthorized("Invalid username.");
             using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -55,7 +58,8 @@ namespace API.Controllers
             return Ok(new UserDto
             {
                 Username = user.UserName,
-                Token = _service.CreateToken(user)
+                Token = _service.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             });
         }
 

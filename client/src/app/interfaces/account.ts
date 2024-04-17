@@ -5,7 +5,8 @@ export interface User {
 
 export interface Token {
     username: string,
-    token: string
+    token: string,
+    photoUrl: string
 }
 
 export interface Register {

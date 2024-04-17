@@ -30,15 +30,23 @@ export class MembersService {
     if (member) {
       return of(member);
     }
-    return this.http.get<Member>(`${this.baseUrl}user/username${username}`)
+    return this.http.get<Member>(`${this.baseUrl}user/${username}`)
   }
 
   updateMember(member: Member) {
     return this.http.put(`${this.baseUrl}user`, member).pipe(
       map(() => {
         const index = this.members.indexOf(member);
-        this.members[index] = {...this.members[index], ...member}
+        this.members[index] = { ...this.members[index], ...member }
       })
     );
+  }
+
+  setMainPhoto(photoId: number) {
+    return this.http.put(`${this.baseUrl}user/set-main-photo/${photoId}`, {});
+  }
+
+  deletePhoto(photoId: number) {
+    return this.http.delete(`${this.baseUrl}user/delete-photo/${photoId}`);
   }
 }

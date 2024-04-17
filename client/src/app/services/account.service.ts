@@ -18,7 +18,6 @@ export class AccountService {
     return this.http.post<Token>(`${this.baseUrl}account/register`, model).pipe(
       map((response) => {
         if (response) {
-          localStorage.setItem('user', JSON.stringify(response));
           this.setCurrentUser(response);
         }
       })
@@ -29,7 +28,6 @@ export class AccountService {
     return this.http.post<Token>(`${this.baseUrl}account/login`, model).pipe(
       map((response) => {
         if (response) {
-          localStorage.setItem('user', JSON.stringify(response));
           this.setCurrentUser(response);
         }
       }) 
@@ -37,6 +35,7 @@ export class AccountService {
   }
 
   setCurrentUser(user: Token) {
+    localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
   }
 
