@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Member } from '../interfaces/member';
@@ -7,11 +7,14 @@ import { map, of } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class MembersService {
+export class MembersService implements OnInit {
   baseUrl = environment.urlBase;
   members: Member[] = [];
 
   constructor(private http: HttpClient) { }
+  
+  ngOnInit(): void {
+  }
 
   getMembers() {
     if (this.members.length > 0) {
