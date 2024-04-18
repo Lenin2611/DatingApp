@@ -19,6 +19,7 @@ export class MemberDetailComponent implements OnInit {
 
   constructor(private memberService: MembersService, private route: ActivatedRoute) { }
 
+
   ngOnInit(): void {
     this.loadMember();
   }
