@@ -2,11 +2,11 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavComponent } from './components/nav/nav.component';
+import { NavComponent } from './pages/nav/nav.component';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from './services/account.service';
 import { Token } from './interfaces/account';
-import { HomeComponent } from './components/home/home.component';
+import { HomeComponent } from './pages/home/home.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 

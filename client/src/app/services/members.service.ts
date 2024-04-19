@@ -19,13 +19,14 @@ export class MembersService implements OnInit {
   user: Token | undefined;
 
   constructor(private http: HttpClient, private accountService: AccountService) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
+    this.accountService.currentUser$.subscribe({
       next: (response) => {
         if (response) {
           this.userParams = new UserParams(response);
           this.user = response;
         }
-      }
+      }, 
+      error: (error) => console.log(error)
     })
   }
   
@@ -90,6 +91,16 @@ export class MembersService implements OnInit {
 
   deletePhoto(photoId: number) {
     return this.http.delete(`${this.baseUrl}user/delete-photo/${photoId}`);
+  }
+
+  addLike(username: string) {
+    return this.http.post(`${this.baseUrl}likes/${username}`, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Member[]>(`${this.baseUrl}likes`, params);
   }
 
   private getPaginatedResult<T>(url: string, params: HttpParams) {

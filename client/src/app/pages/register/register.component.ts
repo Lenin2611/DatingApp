@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import { Register } from '../../interfaces/account';
 import { AccountService } from '../../services/account.service';
 import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';

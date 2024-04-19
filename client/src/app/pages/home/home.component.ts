@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RegisterComponent } from '../register/register.component';
 import { MembersService } from '../../services/members.service';
 
@@ -10,12 +10,17 @@ import { MembersService } from '../../services/members.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
-  constructor(private member: MembersService) {
-    this.member.members = [];
+export class HomeComponent implements OnInit {
+  registerMode = false;
+
+  constructor(private memberService: MembersService) {
+    this.memberService.members = [];
+    this.memberService.memberCache = new Map();
+  }
+
+  ngOnInit(): void {
   }
   
-  registerMode = false;
 
   registerToggle() {
     this.registerMode = true;

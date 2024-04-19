@@ -7,19 +7,12 @@ import { Pagination } from '../../../interfaces/pagination';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { FormsModule } from '@angular/forms';
 import { UserParams } from '../../../interfaces/userParams';
-import { Token } from '../../../interfaces/account';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @Component({
   selector: 'app-member-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MemberCardComponent,
-    PaginationModule,
-    FormsModule,
-    ButtonsModule,
-  ],
+  imports: [CommonModule, MemberCardComponent, PaginationModule, FormsModule, ButtonsModule],
   templateUrl: './member-list.component.html',
   styleUrl: './member-list.component.css',
 })
@@ -44,15 +37,17 @@ export class MemberListComponent implements OnInit {
   loadMembers() {
     if (this.userParams) {
       this.memberService.setUserParams(this.userParams);
-      this.memberService.getMembers(this.userParams).subscribe({
-        next: (response) => {
-          if (response.result && response.pagination) {
-            this.members = response.result;
-            this.pagination = response.pagination;
-          }
-        },
-      });
+    } else {
+      this.userParams = this.memberService.resetUserParams();
     }
+    this.memberService.getMembers(this.userParams!).subscribe({
+      next: (response) => {
+        if (response.result && response.pagination) {
+          this.members = response.result;
+          this.pagination = response.pagination;
+        }
+      },
+    });
   }
 
   resetFilters() {

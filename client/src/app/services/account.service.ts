@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { User, Token, Register } from '../interfaces/account';
 import { BehaviorSubject, map } from 'rxjs';
+import { MembersService } from './members.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,7 @@ export class AccountService {
   setCurrentUser(user: Token | null) {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
+    this.currentUser$ = this.currentUserSource;
   }
 
   logout() {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../interfaces/account';
 import { AccountService } from '../../services/account.service';
@@ -6,6 +6,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { MembersService } from '../../services/members.service';
 
 @Component({
   selector: 'app-nav',
