@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { User, Token, Register } from '../interfaces/account';
 import { BehaviorSubject, map } from 'rxjs';
-import { MembersService } from './members.service';
 
 @Injectable({
   providedIn: 'root'

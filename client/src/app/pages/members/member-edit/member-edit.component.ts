@@ -9,11 +9,12 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
+import { NgxPrettyDateModule } from 'ngx-pretty-date';
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [CommonModule, TabsModule, FormsModule, PhotoEditorComponent],
+  imports: [CommonModule, TabsModule, FormsModule, PhotoEditorComponent, NgxPrettyDateModule],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css'
 })
