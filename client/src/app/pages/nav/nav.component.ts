@@ -7,11 +7,12 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { MembersService } from '../../services/members.service';
+import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, RouterModule, ToastrModule, CommonModule, BsDropdownModule],
+  imports: [FormsModule, AsyncPipe, RouterModule, ToastrModule, CommonModule, BsDropdownModule, HasRoleDirective],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
