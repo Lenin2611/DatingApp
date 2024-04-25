@@ -3,6 +3,7 @@ using API.Helpers;
 using API.Interfaces;
 using API.Repositories;
 using API.Services;
+using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
@@ -20,7 +21,11 @@ namespace API.Extensions
             {
                 option.AddPolicy("CorsPolicy", option =>
                 {
-                    option.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    option
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins("https://localhost:4200");
                 });
             });
 
@@ -39,6 +44,16 @@ namespace API.Extensions
             services.AddScoped<ILikeRepository, LikeRepository>();
 
             services.AddScoped<IMessageRepository, MessageRepository>();
+
+            services.AddRazorPages();
+
+            services.AddServerSideBlazor();
+
+            services.AddSignalR(e => {
+                e.MaximumReceiveMessageSize = 102400000;
+            });
+
+            services.AddSingleton<PresenceTracker>();
 
             return services;
         }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Member } from '../../../interfaces/member';
 import { MembersService } from '../../../services/members.service';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,10 @@ import { MemberMessagesComponent } from '../member-messages/member-messages.comp
 import { MessageService } from '../../../services/message.service';
 import { Message } from '../../../interfaces/message';
 import { ToastrService } from 'ngx-toastr';
+import { PresenceService } from '../../../services/presence.service';
+import { AccountService } from '../../../services/account.service';
+import { Token } from '../../../interfaces/account';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-member-detail',
@@ -18,14 +22,27 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './member-detail.component.html',
   styleUrl: './member-detail.component.css'
 })
-export class MemberDetailComponent implements OnInit {
+export class MemberDetailComponent implements OnInit, OnDestroy {
   @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent;
-  member: Member = { } as Member;
+  member: Member = {} as Member;
   images: GalleryItem[] = [];
   activeTab?: TabDirective;
   messages: Message[] = []
+  user?: Token;
 
-  constructor(private memberService: MembersService, private route: ActivatedRoute, private messageService: MessageService, private toastr: ToastrService) { }
+  constructor(private memberService: MembersService, private route: ActivatedRoute, private messageService: MessageService, private toastr: ToastrService, public presenceService: PresenceService, private accountService: AccountService) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.user = response;
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
+  }
 
   ngOnInit(): void {
     this.route.data.subscribe({
@@ -39,8 +56,10 @@ export class MemberDetailComponent implements OnInit {
 
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
-    if (this.activeTab.heading === 'Messages') {
-      this.loadMessages();
+    if (this.activeTab.heading === 'Messages' && this.user) {
+      this.messageService.createHubConnection(this.user, this.member.userName);
+    } else {
+      this.messageService.stopHubConnection();
     }
   }
 

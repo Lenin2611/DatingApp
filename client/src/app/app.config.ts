@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -10,6 +10,7 @@ import { jwtInterceptor } from './interceptors/jwt.interceptor';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { CustomRouteReuseStrategy } from './interfaces/customRouteReuseStrategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideToastr(),
     provideAnimations(),
-    importProvidersFrom([NgxSpinnerModule.forRoot({ type: 'timer' }), ModalModule.forRoot()])
+    importProvidersFrom([NgxSpinnerModule.forRoot({ type: 'timer' }), ModalModule.forRoot()]),
+    { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy }
   ]
 };
