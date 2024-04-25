@@ -31,8 +31,6 @@ namespace API.Extensions
 
             services.AddScoped<ITokenService, TokenService>();
 
-            services.AddScoped<IUserRepository, UserRepository>();
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
@@ -40,10 +38,6 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
 
             services.AddScoped<LogUserActivity>();
-
-            services.AddScoped<ILikeRepository, LikeRepository>();
-
-            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddRazorPages();
 
@@ -54,6 +48,8 @@ namespace API.Extensions
             });
 
             services.AddSingleton<PresenceTracker>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

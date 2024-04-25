@@ -23,6 +23,12 @@ namespace API.Repositories
             _userManager = userManager;
         }
 
+        public UserRepository(DataContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
         public async Task<MemberDto> GetMemberByUsernameAsync(string username)
         {
             return await _context.Users
@@ -58,7 +64,7 @@ namespace API.Repositories
 
         public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
-            return await _userManager.Users
+            return await _context.Users
                 .Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == username);
         }
@@ -75,14 +81,17 @@ namespace API.Repositories
             _context.Remove(user);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public void Update(AppUser user)
         {
             _context.Entry(user).State = EntityState.Modified;
+        }
+
+        public async Task<string> GetUserGender(string username)
+        {
+            return await _context.Users
+                .Where(x => x.UserName == username)
+                .Select(x => x.Gender)
+                .FirstOrDefaultAsync();
         }
     }
 }

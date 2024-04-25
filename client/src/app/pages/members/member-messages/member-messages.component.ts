@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Message } from '../../../interfaces/message';
 import { MessageService } from '../../../services/message.service';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,7 @@ import { NgxPrettyDateModule } from 'ngx-pretty-date';
 import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-member-messages',
   standalone: true,
   imports: [CommonModule, NgxPrettyDateModule, FormsModule],

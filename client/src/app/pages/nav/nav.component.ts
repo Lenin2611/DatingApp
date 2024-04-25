@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../interfaces/account';
 import { AccountService } from '../../services/account.service';
@@ -6,7 +6,6 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { MembersService } from '../../services/members.service';
 import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
@@ -29,7 +28,11 @@ export class NavComponent implements OnInit {
 
   login() {
     this.accountService.login(this.model).subscribe({
-      next: () => this.router.navigateByUrl('/members'),
+      next: () => {
+        this.router.navigateByUrl('/members')
+        this.model.username = '';
+        this.model.password = '';
+      },
       error: (error) => console.log(error.error)
     });
   }
