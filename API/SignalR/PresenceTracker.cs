@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-
 namespace API.SignalR
 {
     public class PresenceTracker

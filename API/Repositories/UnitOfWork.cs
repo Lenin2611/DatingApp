@@ -1,6 +1,7 @@
 using API.Data;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
@@ -20,6 +21,7 @@ namespace API.Repositories
         public ILikeRepository LikeRepository => new LikeRepository(_context);
 
         public IMessageRepository MessageRepository => new MessageRepository(_context, _mapper);
+        public IPhotoRepository PhotoRepository => new PhotoRepository(_context, _mapper);
 
         public async Task<bool> Complete()
         {

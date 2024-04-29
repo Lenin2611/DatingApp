@@ -29,12 +29,15 @@ namespace API.Repositories
             _mapper = mapper;
         }
 
-        public async Task<MemberDto> GetMemberByUsernameAsync(string username)
+        public async Task<MemberDto> GetMemberByUsernameAsync(string username, string currentUser)
         {
-            return await _context.Users
-                .Where(x => x.UserName == username)
+            var query = _context.Users
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+                .AsQueryable();
+            if (username == currentUser)
+                query = query.IgnoreQueryFilters();
+            var member = await query.FirstOrDefaultAsync(x => x.UserName == username);
+            return member;
         }
 
         public async Task<AppUser> GetMemberByIdAsync(int id)
@@ -66,6 +69,7 @@ namespace API.Repositories
         {
             return await _context.Users
                 .Include(p => p.Photos)
+                .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(x => x.UserName == username);
         }
 
@@ -92,6 +96,24 @@ namespace API.Repositories
                 .Where(x => x.UserName == username)
                 .Select(x => x.Gender)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<AppUser> GetUserByPhotoId(int photoId)
+        {
+            var result = await (from user in _context.Users
+                                join photo in _context.Photos on user.Id equals photo.AppUserId
+                                where photo.Id == photoId
+                                select user)
+                                    .IgnoreQueryFilters()
+                                    .FirstOrDefaultAsync();
+            var photos = await (from photo in _context.Photos
+                                where photo.AppUserId == result.Id
+                                select photo)
+                                    .IgnoreQueryFilters()
+                                    .ToListAsync();
+
+            
+            return result;
         }
     }
 }

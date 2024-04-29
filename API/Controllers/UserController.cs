@@ -40,7 +40,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUserByUsername(string username)
         {
-            return await _unitOfWork.UserRepository.GetMemberByUsernameAsync(username);
+            return await _unitOfWork.UserRepository.GetMemberByUsernameAsync(username, User.GetUsername());
         }
 
         [HttpPut]
@@ -78,8 +78,6 @@ namespace API.Controllers
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
             };
-            if (user.Photos.Count == 0)
-                photo.IsMain = true;
             user.Photos.Add(photo);
             if (await _unitOfWork.Complete())
                 return CreatedAtAction(nameof(GetUserByUsername),
@@ -94,12 +92,14 @@ namespace API.Controllers
             var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
             if (user == null)
                 NotFound();
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = await _unitOfWork.PhotoRepository.GetPhotoByIdAsync(photoId);
             if (photo == null)
                 return NotFound();
             if (photo.IsMain)
                 return BadRequest("This is already your main photo.");
-            var currentMain = user.Photos.First(x => x.IsMain);
+            if (!photo.IsApproved)
+                return BadRequest("This photo is not approved");
+            var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
             if (currentMain != null)
                 currentMain.IsMain = false;
             photo.IsMain = true;
@@ -111,10 +111,7 @@ namespace API.Controllers
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
-            if (user == null)
-                NotFound();
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = await _unitOfWork.PhotoRepository.GetPhotoByIdAsync(photoId);
             if (photo == null)
                 return NotFound();
             if (photo.IsMain)
@@ -125,7 +122,7 @@ namespace API.Controllers
                 if (result.Error != null)
                     return BadRequest(result.Error.Message);
             }
-            user.Photos.Remove(photo);
+            _unitOfWork.PhotoRepository.RemovePhoto(photo);
             if (await _unitOfWork.Complete())
                 return Ok();
             return BadRequest("Problems while deleting the photo.");

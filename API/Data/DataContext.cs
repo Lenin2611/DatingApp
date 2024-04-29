@@ -16,6 +16,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int, IdentityUser
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
+    public DbSet<Photo> Photos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,5 +28,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int, IdentityUser
         builder.Entity<UserLike>().HasOne(x => x.TargetUser).WithMany(x => x.LikedByUsers).HasForeignKey(x => x.TargetUserId).OnDelete(DeleteBehavior.NoAction);
         builder.Entity<Message>().HasOne(x => x.Recipient).WithMany(x => x.MessagesReceived).OnDelete(DeleteBehavior.Restrict);
         builder.Entity<Message>().HasOne(x => x.Sender).WithMany(x => x.MessagesSent).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<Photo>().HasOne(x => x.AppUser).WithMany(x => x.Photos).HasForeignKey(x => x.AppUserId);
+        builder.Entity<Photo>().HasQueryFilter(x => x.IsApproved);
     }
 }

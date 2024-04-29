@@ -7,6 +7,8 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { HasRoleDirective } from '../../directives/has-role.directive';
+import { take } from 'rxjs';
+import { Member } from '../../interfaces/member';
 
 @Component({
   selector: 'app-nav',
@@ -20,7 +22,6 @@ export class NavComponent implements OnInit {
     username: '',
     password: ''
   };
-
   constructor(public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
@@ -29,9 +30,7 @@ export class NavComponent implements OnInit {
   login() {
     this.accountService.login(this.model).subscribe({
       next: () => {
-        this.router.navigateByUrl('/members')
-        this.model.username = '';
-        this.model.password = '';
+        this.router.navigateByUrl('/members');
       },
       error: (error) => console.log(error.error)
     });
@@ -40,5 +39,15 @@ export class NavComponent implements OnInit {
   logout() {
     this.router.navigateByUrl('/');
     this.accountService.logout();
+    this.model.username = '';
+    this.model.password = '';
+  }
+
+  conditional() {
+    if (localStorage.getItem('user')) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
